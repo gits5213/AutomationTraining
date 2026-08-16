@@ -1,0 +1,35 @@
+{
+  "name": "automationtraining",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "codegen": "npx playwright codegen",
+    "report": "npx playwright show-report",
+    "ui": "npx playwright test --ui", 
+    "debug": "npx playwright test --debug",
+    "debug-ui": "npx playwright test --ui --debug",
+    "debug-codegen": "npx playwright codegen --debug",
+    "debug-report": "npx playwright show-report --debug",
+    "debug-ui": "npx playwright test --ui --debug",
+    "debug-codegen": "npx playwright codegen --debug",
+    "debug-report": "npx playwright show-report --debug",
+    "debug-ui": "npx playwright test --ui --debug",
+    "debug-codegen": "npx playwright codegen --debug",
+    "debug-report": "npx playwright show-report --debug",
+    "debug-ui": "npx playwright test --ui --debug",
+    "debug-codegen": "npx playwright codegen --debug",
+    "debug-report": "npx playwright show-report --debug",
+    "debug-ui": "npx playwright test --ui --debug",
+    "debug-codegen": "npx playwright codegen --debug",
+    "debug-report": "npx playwright show-report --debug"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "1.61.1",
+    "@types/node": "^26.2.0"
+  }
+}
