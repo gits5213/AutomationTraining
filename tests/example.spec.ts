@@ -14,7 +14,7 @@ test.describe('example', () => {
     await homePage.expectTitle(applicationData.title);
   });
 
-  test.only('get started link', async ({ page }) => {
+  test('get started link', async ({ page }) => {
     const docsPage = await homePage.clickGetStarted();
     await docsPage.expectInstallationVisible();
   });
