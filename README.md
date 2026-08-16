@@ -41,7 +41,10 @@ npx playwright install firefox
 ├── tests/                 # Spec files (flows only)
 │   └── example.spec.ts
 ├── playwright.config.ts   # Playwright config (baseURL, browsers, reporters)
-└── .github/workflows/     # CI workflow
+└── .github/
+    ├── CODEOWNERS                  # Default reviewers by path
+    ├── PULL_REQUEST_TEMPLATE.md    # PR description template
+    └── workflows/                  # CI + overnight build
 ```
 
 ### Page Object Model
@@ -102,7 +105,19 @@ Edit browsers and shared options in `playwright.config.ts`.
 
 ## CI
 
-GitHub Actions (`.github/workflows/playwright.yml`) runs on push/PR to `main` or `master`: installs dependencies, browsers, runs tests, and uploads the HTML report artifact.
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `.github/workflows/playwright.yml` | Push / PR to `main` or `master` | Continuous verification on every change |
+| `.github/workflows/overnight-build.yml` | Cron (`0 2 * * *` UTC) + manual (`workflow_dispatch`) | Nightly full test run; uploads HTML report and test-results artifacts |
+
+Both workflows install dependencies and Playwright browsers, run `npx playwright test`, and upload the HTML report.
+
+### Code owners & pull requests
+
+- **CODEOWNERS** (`.github/CODEOWNERS`) auto-requests review from `@gits5213` for matching paths (tests, pages, utilities, CI, etc.).
+- **PR template** (`.github/PULL_REQUEST_TEMPLATE.md`) is applied when you open a pull request.
+
+To enable required reviews from code owners, turn on **Require review from Code Owners** in the branch protection rules for `main`/`master`.
 
 ## Useful links
 
