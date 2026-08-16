@@ -1,0 +1,6 @@
+{
+  "baseUrl": "https://demo.applitools.com/",
+  "loginPath": "/",
+  "expectedAppUrlFragment": "app.html",
+  "applicationName": "ACME Demo App by Applitools"
+}

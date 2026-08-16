@@ -1,0 +1,129 @@
+name: Nightly Build
+
+# Runs every night at 02:00 UTC. Also available for manual runs from the Actions tab.
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: nightly-build
+  cancel-in-progress: false
+
+jobs:
+  nightly-tests:
+    name: Nightly Playwright Tests
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+
+      - name: Run Playwright tests
+        run: npm test
+        env:
+          CI: true
+          BASE_URL: https://demo.applitools.com/
+          USERNAME: test
+          PASSWORD: test
+          ENV: qa
+
+      - name: Run unit tests with Istanbul coverage
+        run: npm run test:coverage
+
+      - name: Upload Allure results
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: allure-results-${{ github.run_id }}
+          path: allure-results/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Upload Allure report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: allure-report-${{ github.run_id }}
+          path: allure-report/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Upload Playwright HTML report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: coverage-report-${{ github.run_id }}
+          path: coverage/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Prepare GitHub Pages bundle
+        if: ${{ !cancelled() }}
+        run: |
+          mkdir -p site
+          if [ -d allure-report ]; then cp -R allure-report site/allure; fi
+          if [ -d playwright-report ]; then cp -R playwright-report site/playwright; fi
+          if [ -d coverage ]; then cp -R coverage site/coverage; fi
+          cat > site/index.html <<'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8" />
+            <title>AutomationAITraining Reports</title>
+          </head>
+          <body>
+            <h1>Nightly Automation Reports</h1>
+            <ul>
+              <li><a href="./allure/index.html">Allure Report</a></li>
+              <li><a href="./playwright/index.html">Playwright HTML Report</a></li>
+              <li><a href="./coverage/index.html">Istanbul Coverage</a></li>
+            </ul>
+          </body>
+          </html>
+          EOF
+
+      - name: Upload Pages artifact
+        if: ${{ !cancelled() }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  publish-pages:
+    name: Publish GitHub Pages
+    needs: nightly-tests
+    if: ${{ always() && needs.nightly-tests.result != 'cancelled' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

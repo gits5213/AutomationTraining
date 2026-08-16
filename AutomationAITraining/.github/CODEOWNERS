@@ -1,0 +1,17 @@
+# CODEOWNERS — request review from these users/teams when matching paths change.
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Replace @gits5213 with your GitHub username or @org/team handles as needed.
+
+# Default owner for everything in the repository
+*       @gits5213
+
+# Test automation framework
+/tests/               @gits5213
+/pages/               @gits5213
+/utilities/           @gits5213
+/data/                @gits5213
+/playwright.config.ts @gits5213
+
+# CI / GitHub configuration
+/.github/             @gits5213

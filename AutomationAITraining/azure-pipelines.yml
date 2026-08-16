@@ -1,0 +1,60 @@
+# Azure DevOps overnight pipeline for Playwright + Allure
+trigger: none
+
+schedules:
+  - cron: '0 2 * * *'
+    displayName: Nightly Playwright run
+    branches:
+      include:
+        - main
+        - master
+    always: true
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  CI: 'true'
+  BASE_URL: 'https://demo.applitools.com/'
+  USERNAME: 'test'
+  PASSWORD: 'test'
+  ENV: 'qa'
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '20.x'
+    displayName: 'Install Node.js'
+
+  - script: npm ci
+    displayName: 'Install npm dependencies'
+
+  - script: npx playwright install chromium --with-deps
+    displayName: 'Install Playwright Chromium'
+
+  - script: npm test
+    displayName: 'Run Playwright tests (Allure via pretest/posttest)'
+
+  - script: npm run test:coverage
+    displayName: 'Run Istanbul unit coverage'
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Allure report'
+    condition: always()
+    inputs:
+      targetPath: 'allure-report'
+      artifact: 'allure-report'
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Playwright HTML report'
+    condition: always()
+    inputs:
+      targetPath: 'playwright-report'
+      artifact: 'playwright-report'
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish coverage report'
+    condition: always()
+    inputs:
+      targetPath: 'coverage'
+      artifact: 'coverage'

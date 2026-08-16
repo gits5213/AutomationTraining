@@ -1,0 +1,17 @@
+{
+  "environment": "qa",
+  "browser": "chromium",
+  "workers": 1,
+  "timeouts": {
+    "default": 30000,
+    "action": 15000,
+    "navigation": 30000,
+    "expect": 10000,
+    "element": 10000
+  },
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "screenshotsDir": "test-results/screenshots"
+}
