@@ -1,0 +1,253 @@
+{
+  "info": {
+    "_postman_id": "0307cd5c-cbfb-4e52-b6cf-491fe1ae3fc1",
+    "name": "DummyJson",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42157118"
+  },
+  "item": [
+    {
+      "name": "postRequest",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response has a JSON body\", function () {\r",
+              "    pm.response.to.be.json;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response body contains an 'id' field that is a number\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"id\");\r",
+              "    pm.expect(jsonData.id).to.be.a(\"number\");\r",
+              "});\r",
+              "\r",
+              "\r",
+              "pm.test(\"Response time is less than 3000ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+              "});\r",
+              "\r",
+              "// Save id to environment variable\r",
+              "var jsonData = pm.response.json();\r",
+              "pm.environment.set(\"postId\", jsonData.id);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"New Test Product\",\r\n  \"description\": \"This is a test product\",\r\n  \"price\": 100\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyjson.com/products/add",
+          "protocol": "https",
+          "host": [
+            "dummyjson",
+            "com"
+          ],
+          "path": [
+            "products",
+            "add"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "putRequest",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"New Test Product\",\r\n  \"description\": \"This is a test product\",\r\n  \"price\": 100\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyjson.com/products/10",
+          "protocol": "https",
+          "host": [
+            "dummyjson",
+            "com"
+          ],
+          "path": [
+            "products",
+            "10"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "patchRequest",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"New Test Product\",\r\n  \"description\": \"This is a test product\",\r\n  \"price\": 100\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyjson.com/products/10",
+          "protocol": "https",
+          "host": [
+            "dummyjson",
+            "com"
+          ],
+          "path": [
+            "products",
+            "10"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getRequest",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Response status code is 200\", function () {",
+              "    pm.expect(pm.response.code).to.eql(201);",
+              "});",
+              "",
+              "",
+              "pm.test(\"Response time is less than 200ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(200);",
+              "});",
+              "",
+              "",
+              "pm.test(\"Response has the required fields\", function () {",
+              "    const responseData = pm.response.json();",
+              "    ",
+              "    pm.expect(responseData).to.be.an('object');",
+              "    pm.expect(responseData).to.have.all.keys(",
+              "        'id', 'title', 'description', 'category', 'price', ",
+              "        'discountPercentage', 'rating', 'stock', 'tags', ",
+              "        'brand', 'sku', 'weight', 'dimensions', 'warrantyInformation', ",
+              "        'shippingInformation', 'availabilityStatus', 'reviews', ",
+              "        'returnPolicy', 'minimumOrderQuantity', 'meta', ",
+              "        'images', 'thumbnail'",
+              "    );",
+              "});",
+              "",
+              "pm.test(\"Price is a non-negative number\", function () {",
+              "    const responseData = pm.response.json();",
+              "    ",
+              "    pm.expect(responseData).to.be.an('object');",
+              "    pm.expect(responseData.price).to.be.a('number').and.to.be.at.least(0, \"Price should not be negative\");",
+              "});",
+              "",
+              "",
+              "pm.test(\"Reviews array contains valid objects with required fields\", function () {",
+              "    const responseData = pm.response.json();",
+              "    ",
+              "    pm.expect(responseData).to.be.an('object');",
+              "    pm.expect(responseData.reviews).to.be.an('array').that.is.not.empty;",
+              "",
+              "    responseData.reviews.forEach(review => {",
+              "        pm.expect(review).to.be.an('object');",
+              "        pm.expect(review).to.have.all.keys('rating', 'comment', 'date', 'reviewerName', 'reviewerEmail');",
+              "        pm.expect(review.rating).to.be.a('number');",
+              "        pm.expect(review.comment).to.be.a('string');",
+              "        pm.expect(review.date).to.be.a('string');",
+              "        pm.expect(review.reviewerName).to.be.a('string');",
+              "        pm.expect(review.reviewerEmail).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/);",
+              "    });",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"New Test Product\",\r\n  \"description\": \"This is a test product\",\r\n  \"price\": 100\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyjson.com/products/10",
+          "protocol": "https",
+          "host": [
+            "dummyjson",
+            "com"
+          ],
+          "path": [
+            "products",
+            "10"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "deleteRequest",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"New Test Product\",\r\n  \"description\": \"This is a test product\",\r\n  \"price\": 100\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyjson.com/products/1",
+          "protocol": "https",
+          "host": [
+            "dummyjson",
+            "com"
+          ],
+          "path": [
+            "products",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
