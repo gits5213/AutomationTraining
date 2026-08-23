@@ -1,8 +1,8 @@
 import { test } from '@playwright/test';
-import applicationData from '../data/applicationData.json';
-import { HomePage } from '../pages/HomePage';
+import applicationData from '../../data/applicationData.json';
+import { HomePage } from '../../pages/HomePage';
 
-test.describe('example', () => {
+test.describe('example', { tag: ['@e2e', '@regression'] }, () => {
   let homePage: HomePage;
 
   test.beforeEach(async ({ page }) => {
@@ -10,7 +10,7 @@ test.describe('example', () => {
     await homePage.goto();
   });
 
-  test('has title', async () => {
+  test('has title', { tag: '@smoke' }, async () => {
     await homePage.expectTitle(applicationData.title);
   });
 
