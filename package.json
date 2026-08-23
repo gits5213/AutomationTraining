@@ -5,6 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test",
+    "test:smoke": "npx playwright test --grep @smoke",
+    "test:api": "npx playwright test --grep @api",
+    "test:e2e": "npx playwright test --grep @e2e",
+    "test:regression": "npx playwright test --grep @regression",
     "codegen": "npx playwright codegen",
     "report": "npx playwright show-report",
     "ui": "npx playwright test --ui", 
